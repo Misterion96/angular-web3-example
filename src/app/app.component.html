@@ -1,0 +1,17 @@
+<div *ngIf="hasProvider(); else noProviderRef">
+  <ng-container *ngIf="accounts().length; else noAccountsRef ">
+    <app-wallet
+      *ngFor="let account of accounts()"
+      [account]="account"
+    ></app-wallet>
+  </ng-container>
+</div>
+
+
+<ng-template #noAccountsRef>
+  <app-connect-metamask></app-connect-metamask>
+</ng-template>
+
+<ng-template #noProviderRef>
+  <p>Not found provider</p>
+</ng-template>

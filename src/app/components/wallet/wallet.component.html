@@ -1,0 +1,6 @@
+<ng-container *ngIf="wallet$ | async as wallet">
+  <div>Address: {{wallet.address}}</div>
+  <div>Balance: {{wallet.eth}} ETH </div>
+  <div>Balance: {{wallet.weth}} WETH </div>
+</ng-container>
+
