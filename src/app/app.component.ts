@@ -3,7 +3,7 @@ import { Component, computed, effect, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ConnectMetamaskComponent } from './components/connect-metamask/connect-metamask.component';
 import { WalletComponent } from './components/wallet/wallet.component';
-import { MetamaskService } from './metamask/metamask.service';
+import { MetamaskService } from '~metamask';
 
 @Component({
   selector: 'app-root',
@@ -13,8 +13,8 @@ import { MetamaskService } from './metamask/metamask.service';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
-  public hasProvider = computed(() => Boolean(this.metaMaskService.state().provider))
-  public accounts = computed(() => this.metaMaskService.state().accounts)
+  public hasProvider = computed(() => Boolean(this.metaMaskService.state().web3))
+  public accounts = computed(() => this.metaMaskService.state().accounts.slice(0, 1))
 
   constructor(public readonly metaMaskService: MetamaskService) {
     effect(() => {

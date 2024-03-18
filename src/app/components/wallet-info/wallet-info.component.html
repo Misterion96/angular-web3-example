@@ -1,0 +1,7 @@
+<div>Address: {{wallet.address}}</div>
+
+<div *ngFor="let balance of wallet.balances">
+  Balance: <span class="balance_value">{{balance.value}}</span>
+  <span>&nbsp;</span>
+  <span class="balance_coin">{{balance.coin | uppercase }}</span>
+</div>

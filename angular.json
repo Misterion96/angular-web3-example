@@ -125,31 +125,34 @@
         }
       }
     },
-    "web3-api": {
+    "ethereum-coins": {
       "projectType": "library",
-      "root": "projects/web3-api",
-      "sourceRoot": "projects/web3-api/src",
+      "root": "projects/ethereum-coins",
+      "sourceRoot": "projects/ethereum-coins/src",
       "prefix": "lib",
       "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "project": "projects/web3-api/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/web3-api/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "projects/web3-api/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
-        },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/web3-api/tsconfig.spec.json",
+            "tsConfig": "projects/ethereum-coins/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "metamask": {
+      "projectType": "library",
+      "root": "projects/metamask",
+      "sourceRoot": "projects/metamask/src",
+      "prefix": "lib",
+      "architect": {
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/metamask/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"

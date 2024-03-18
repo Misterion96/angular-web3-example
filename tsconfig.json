@@ -4,6 +4,14 @@
   "compilerOptions": {
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "~metamask": [
+        "./projects/metamask/src/index"
+      ],
+      "~ethereum-coins": [
+        "./projects/ethereum-coins/src/index"
+      ]
+    },
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
@@ -23,11 +31,6 @@
       "ES2022",
       "dom"
     ],
-    "paths": {
-      "web3-api": [
-        "./dist/web3-api"
-      ]
-    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

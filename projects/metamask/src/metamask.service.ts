@@ -1,7 +1,14 @@
 import { Injectable, OnDestroy, signal } from '@angular/core';
 import detectEthereumProvider from '@metamask/detect-provider';
-import { Contract, Web3, Web3EthInterface } from 'web3';
-import { ABI } from './utils/abi';
+import { Web3, Web3EthInterface, MetaMaskProvider, EthExecutionAPI } from 'web3';
+import {
+  toWei,
+  fromWei
+} from 'web3-utils'
+import {
+  Contract
+} from 'web3-eth-contract'
+import { ABI } from './abi';
 
 export enum EnMetamaskStateStatus {
   IDLE,
@@ -14,32 +21,30 @@ export interface IMetamaskState {
   status: EnMetamaskStateStatus,
   accounts: string[],
   error?: any
-  provider: Web3 | null
+  web3: Web3 | null,
 }
 
 const initialState: IMetamaskState = {
   status: EnMetamaskStateStatus.IDLE,
   accounts: [],
-  provider: null
+  web3: null,
 }
+
+const ethereum: MetaMaskProvider<EthExecutionAPI> = (window as any).ethereum;
 
 @Injectable({
   providedIn: 'root'
 })
 export class MetamaskService implements OnDestroy {
-  private _state = signal<IMetamaskState>(initialState);
-  public state = this._state.asReadonly();
+  private readonly _state = signal<IMetamaskState>(initialState);
+  public readonly state = this._state.asReadonly();
 
   public ngOnDestroy(): void {
     this.destroyListeners();
   }
 
-  public get eth(): Web3EthInterface {
-    return this._state().provider!.eth;
-  }
-
-  public get utils() {
-    return this._state().provider?.utils;
+  private get eth(): Web3EthInterface {
+    return this._state().web3?.eth!;
   }
 
   public async init(): Promise<void> {
@@ -51,10 +56,10 @@ export class MetamaskService implements OnDestroy {
       return
     }
 
-    this.setProvider(new Web3((window as any).ethereum));
+    this.setWeb3(provider as any);
+
     try {
-      const accounts = await this.eth.getAccounts();
-      this.setAccounts(accounts);
+      this.setAccounts(await this.eth.getAccounts());
     } catch (e: unknown) {
       this.setError(e)
     }
@@ -66,8 +71,7 @@ export class MetamaskService implements OnDestroy {
     this.setLoading();
 
     try {
-      const ethereum = (window as any).ethereum;
-      this.setAccounts(ethereum.request({method: 'eth_requestAccounts'}))
+      this.setAccounts(await ethereum.request({method: 'eth_requestAccounts'}) as string[])
     } catch (e: unknown) {
       this.setError(e)
     }
@@ -79,12 +83,31 @@ export class MetamaskService implements OnDestroy {
     return this.parseBalance(balance);
   }
 
-  public async getWethBalance(address: string): Promise<number> {
-    const wethContract: Contract<typeof ABI> = new this.eth.Contract(ABI, '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2')!;
-    const balance: bigint = await wethContract.methods['balanceOf'](address).call();
+  public async getSpecificBalance(walletAddress: string, tokenAddress: string): Promise<number> {
+    const contract: Contract<typeof ABI> = new Contract(ABI, tokenAddress);
+    const balance: bigint = await contract.methods['balanceOf'](walletAddress).call();
 
     return this.parseBalance(balance);
   }
+
+  public createTokenTransfer(
+    tokenAddress: string,
+    receiveAddress: string,
+    amount: number
+  ) {
+    const web3 = this._state().web3!;
+    const contract: Contract<typeof ABI> = new Contract(ABI, tokenAddress, web3.getContextObject());
+    const sendAmount = toWei(amount, 'ether');
+
+    return contract.methods['transfer'](receiveAddress, sendAmount);
+  }
+
+  // public sendEthereum(params: any): Promise<string> {
+  //   return ethereum.request<string>({
+  //     method: 'eth_sendTransaction',
+  //     params: [params]
+  //   }) as Promise<string>
+  // }
 
 
   private setLoading(): void {
@@ -94,15 +117,19 @@ export class MetamaskService implements OnDestroy {
     }))
   }
 
-  private setProvider(provider: Web3): void {
+  private setWeb3(provider: MetaMaskProvider<EthExecutionAPI>): void {
+    const web3 = new Web3(provider);
     this._state.update(s => ({
       ...s,
-      provider
+      web3,
     }))
   }
 
   private setAccounts(accounts: string[]): void {
-    const status: EnMetamaskStateStatus = accounts.length ? EnMetamaskStateStatus.READY : EnMetamaskStateStatus.IDLE;
+    const status: EnMetamaskStateStatus = accounts.length
+      ? EnMetamaskStateStatus.READY
+      : EnMetamaskStateStatus.IDLE;
+
     this._state.update(s => ({
       ...s,
       status,
@@ -119,19 +146,14 @@ export class MetamaskService implements OnDestroy {
   }
 
   private parseBalance(value: bigint): number {
-
-    return parseFloat(this.utils?.fromWei(value, 'ether')!);
+    return parseFloat(fromWei(value, 'ether')!);
   }
 
   private initListeners(): void {
-    const ethereum = (window as any).ethereum;
-
     ethereum.on("accountsChanged", this.setAccounts.bind(this));
   }
 
   private destroyListeners(): void {
-    const ethereum = (window as any).ethereum;
-
     ethereum.removeListener("accountsChanged", this.setAccounts.bind(this));
   }
 }

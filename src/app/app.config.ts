@@ -2,7 +2,7 @@ import { APP_INITIALIZER, ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { MetamaskService } from './metamask/metamask.service';
+import { MetamaskService } from '~metamask';
 
 export const appConfig: ApplicationConfig = {
   providers: [

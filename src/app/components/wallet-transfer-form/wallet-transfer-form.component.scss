@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  margin: 4px 8px;
+  padding: 4px;
+  border: 1px solid #b2b2b2;
+
+  form > * {
+    margin-bottom: 4px;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+
+  label {
+    display: block;
+  }
+}

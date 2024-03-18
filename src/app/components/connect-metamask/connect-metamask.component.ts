@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
-import { EnMetamaskStateStatus, MetamaskService } from '../../metamask/metamask.service';
+import { EnMetamaskStateStatus, MetamaskService } from '~metamask';
 
 @Component({
   selector: 'app-connect-metamask',
