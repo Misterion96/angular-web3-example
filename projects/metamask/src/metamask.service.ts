@@ -84,7 +84,8 @@ export class MetamaskService implements OnDestroy {
   }
 
   public async getSpecificBalance(walletAddress: string, tokenAddress: string): Promise<number> {
-    const contract: Contract<typeof ABI> = new Contract(ABI, tokenAddress);
+    const web3 = this._state().web3!;
+    const contract: Contract<typeof ABI> = new Contract(ABI, tokenAddress, web3.getContextObject());
     const balance: bigint = await contract.methods['balanceOf'](walletAddress).call();
 
     return this.parseBalance(balance);
