@@ -1,0 +1,33 @@
+<ng-container *ngIf="form">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div>
+            <label for="address">Send to</label>
+            <input type="text" id="address" formControlName="receiveAddress">
+            <!--      TODO error-field component-->
+            <div *ngIf="addressControl?.errors && addressControl?.touched">
+                {{addressControl?.errors | json}}
+            </div>
+        </div>
+
+        <div>
+            <label for="amount">Amount</label>
+            <input type="number" id="amount" formControlName="amount" min="0.00001" required>
+
+            <select formControlName="coin">
+                <option *ngFor="let option of tokens">
+                    {{option}}
+                </option>
+            </select>
+
+            <!--      TODO error-field component-->
+            <div *ngIf="amountControl?.errors && amountControl?.touched">
+                {{amountControl?.errors | json}}
+            </div>
+        </div>
+
+        <button type="submit" [disabled]="transactionResult().status === 'loading'">Transfer</button>
+    </form>
+
+    <app-wallet-transaction-form-result [result]="transactionResult()"></app-wallet-transaction-form-result>
+</ng-container>
+

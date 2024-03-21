@@ -3,5 +3,5 @@
 <div *ngFor="let balance of wallet.balances">
   Balance: <span class="balance_value">{{balance.value}}</span>
   <span>&nbsp;</span>
-  <span class="balance_coin">{{balance.coin | uppercase }}</span>
+  <span class="balance_coin">{{balance.token | uppercase }}</span>
 </div>

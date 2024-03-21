@@ -1,5 +1,5 @@
 import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
-import { Component, computed, effect, OnInit } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ConnectMetamaskComponent } from './components/connect-metamask/connect-metamask.component';
 import { WalletComponent } from './components/wallet/wallet.component';
@@ -12,18 +12,10 @@ import { MetamaskService } from '~metamask';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   public hasProvider = computed(() => Boolean(this.metaMaskService.state().web3))
   public accounts = computed(() => this.metaMaskService.state().accounts.slice(0, 1))
 
   constructor(public readonly metaMaskService: MetamaskService) {
-    effect(() => {
-      console.log(this.accounts())
-    })
   }
-
-  public ngOnInit(): void {
-  }
-
-
 }

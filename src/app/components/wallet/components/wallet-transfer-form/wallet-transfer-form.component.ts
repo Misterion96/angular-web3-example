@@ -1,12 +1,13 @@
-import { AsyncPipe, JsonPipe, NgForOf, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, OnInit, signal } from '@angular/core';
+import { JsonPipe, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormGroup,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { TEthereumCoin } from '~ethereum-coins';
-import { TTransferForm, WalletTransferFormService } from './services/wallet-transfer-form.service';
+import { WalletTransactionFormResultComponent } from './components';
+import { WalletTransferFormService } from './services';
+import { TTransferForm } from './types';
 import { markControlAsTouchedAndValidate } from './utils/mark-control-as-touched-and-validate';
 
 @Component({
@@ -16,8 +17,7 @@ import { markControlAsTouchedAndValidate } from './utils/mark-control-as-touched
     ReactiveFormsModule,
     NgIf,
     JsonPipe,
-    NgForOf,
-    AsyncPipe
+    WalletTransactionFormResultComponent
   ],
   templateUrl: './wallet-transfer-form.component.html',
   styleUrl: './wallet-transfer-form.component.scss',
@@ -25,9 +25,8 @@ import { markControlAsTouchedAndValidate } from './utils/mark-control-as-touched
   providers: [WalletTransferFormService]
 })
 export class WalletTransferFormComponent implements OnInit {
-  public readonly result = signal('');
-  public readonly errors = signal('');
-  public readonly coins: TEthereumCoin[] = this.transferFormService.coins;
+  public readonly transactionResult = this.transferFormService.transactionResult;
+  public readonly tokens: string[] = this.transferFormService.tokens;
 
   public form!: FormGroup<TTransferForm>;
 
@@ -38,6 +37,7 @@ export class WalletTransferFormComponent implements OnInit {
     private readonly transferFormService: WalletTransferFormService
   ) {
   }
+
   public ngOnInit(): void {
     this.form = this.transferFormService.initForm();
   }
@@ -51,12 +51,9 @@ export class WalletTransferFormComponent implements OnInit {
   }
 
   public onSubmit(): void {
-    this.result.set('');
-    this.errors.set('');
-
     markControlAsTouchedAndValidate(this.form!)
 
-    if(this.form.invalid){
+    if (this.form.invalid) {
       return
     }
 
@@ -65,9 +62,6 @@ export class WalletTransferFormComponent implements OnInit {
     this.transferFormService.onSubmit(
       this.walletAddress,
       (this.form.value as any)
-    )
-      .then(({transactionHash}) => this.result.set(transactionHash))
-      .catch((e) => this.errors.set(e.message))
-      .finally(() => this.form.enable())
+    ).finally(() => this.form.enable())
   }
 }

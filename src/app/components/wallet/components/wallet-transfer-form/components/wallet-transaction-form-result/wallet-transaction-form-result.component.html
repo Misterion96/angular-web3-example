@@ -1,0 +1,9 @@
+<ng-container [ngSwitch]="result.status">
+    <div *ngSwitchCase="status.ERROR">
+        {{result.value}}
+    </div>
+
+    <div *ngSwitchCase="status.SUCCESS">
+        {{result.value}}
+    </div>
+</ng-container>
