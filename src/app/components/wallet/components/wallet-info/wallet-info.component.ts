@@ -1,12 +1,14 @@
 import { NgForOf, UpperCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
+export type TBalance = {
+  token: string,
+  value: number,
+}
+
 export interface IWalletInfo {
   address: string,
-  balances: {
-    coin: string,
-    value: number,
-  }[]
+  balances: TBalance[]
 }
 
 @Component({

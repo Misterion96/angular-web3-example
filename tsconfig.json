@@ -8,8 +8,8 @@
       "~metamask": [
         "./projects/metamask/src/index"
       ],
-      "~ethereum-coins": [
-        "./projects/ethereum-coins/src/index"
+      "~ethereum-tokens": [
+        "./projects/ethereum-tokens/src/index"
       ]
     },
     "strict": true,

@@ -9,15 +9,16 @@ const coins = [
 
 const availableCoins = coins.map(c => c.type);
 
-export type TEthereumCoin = typeof availableCoins[number];
+export type TEthereumToken = typeof availableCoins[number];
 
 @Injectable({
   providedIn: 'root'
 })
-export class EthereumCoinsService {
-  public readonly availableCoins = availableCoins;
+export class EthereumTokensService {
+  public readonly availableTokens = availableCoins;
 
-  public getTokenAddress(type: TEthereumCoin): string {
+  // TODO fetch
+  public async getTokenAddress(type: TEthereumToken | string): Promise<string> {
     return coins.find(c => c.type === type)?.tokenAddress!
   }
 }

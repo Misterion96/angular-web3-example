@@ -1,5 +1,6 @@
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 
+// TODO move SDK
 export function markControlAsTouchedAndValidate(control: AbstractControl): void {
   if (control instanceof FormArray) {
     control.controls.forEach(nestedControl => {
