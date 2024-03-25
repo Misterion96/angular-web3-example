@@ -1,4 +1,4 @@
-import { JsonPipe, NgIf } from '@angular/common';
+import { JsonPipe, NgForOf, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -17,7 +17,8 @@ import { markControlAsTouchedAndValidate } from './utils/mark-control-as-touched
     ReactiveFormsModule,
     NgIf,
     JsonPipe,
-    WalletTransactionFormResultComponent
+    WalletTransactionFormResultComponent,
+    NgForOf
   ],
   templateUrl: './wallet-transfer-form.component.html',
   styleUrl: './wallet-transfer-form.component.scss',
